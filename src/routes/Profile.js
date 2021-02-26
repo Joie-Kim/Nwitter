@@ -10,16 +10,7 @@ const Profile = ({ userObj, refreshUser }) => {
     authService.signOut();
     history.push('/');
   };
-  /*
-  const getMyNweets = async () => {
-    const nweets = await dbService
-      .collection('nweets')
-      .where('creatorId', '==', userObj.uid)
-      .orderBy('createdAt')
-      .get();
-    console.log(nweets);
-  };
-  */
+
   const onChange = (event) => {
     const {
       target: { value },
