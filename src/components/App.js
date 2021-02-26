@@ -44,7 +44,6 @@ function App() {
       ) : (
         'Initializing ...'
       )}
-      <footer>&copy; nwitter {new Date().getFullYear()}</footer>
     </>
   );
 }
