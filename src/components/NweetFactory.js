@@ -1,28 +1,19 @@
 import React, { useState } from 'react';
-import { dbService, storageService } from 'fbase';
 import { v4 as uuidv4 } from 'uuid';
-
+import { storageService, dbService } from 'fbase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const NweetFactory = ({ userObj }) => {
   const [nweet, setNweet] = useState('');
-  const [attachment, setAttachment] = useState();
-
-  const onChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setNweet(value);
-  }; // onChange
+  const [attachment, setAttachment] = useState('');
   const onSubmit = async (event) => {
+    event.preventDefault();
     if (nweet === '') {
       return;
     }
-    event.preventDefault();
     let attachmentUrl = '';
     if (attachment !== '') {
-      // 파일 업로드 한 경우에만 Url 받아옴
       const attachmentRef = storageService
         .ref()
         .child(`${userObj.uid}/${uuidv4()}`);
@@ -32,13 +23,19 @@ const NweetFactory = ({ userObj }) => {
     const nweetObj = {
       text: nweet,
       createdAt: Date.now(),
-      createorId: userObj.uid,
+      creatorId: userObj.uid,
       attachmentUrl,
     };
-    dbService.collection('nweets').add(nweetObj);
+    await dbService.collection('nweets').add(nweetObj);
     setNweet('');
     setAttachment('');
-  }; // onSubmit
+  };
+  const onChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setNweet(value);
+  };
   const onFileChange = (event) => {
     const {
       target: { files },
@@ -51,10 +48,11 @@ const NweetFactory = ({ userObj }) => {
       } = finishedEvent;
       setAttachment(result);
     };
-    reader.readAsDataURL(file);
-  }; // onFileChange
-  const onClearAttachment = () => setAttachment(''); // onClearAttachment
-
+    if (Boolean(file)) {
+      reader.readAsDataURL(file);
+    }
+  };
+  const onClearAttachment = () => setAttachment('');
   return (
     <form onSubmit={onSubmit} className="factoryForm">
       <div className="factoryInput__container">
@@ -68,7 +66,7 @@ const NweetFactory = ({ userObj }) => {
         />
         <input type="submit" value="&rarr;" className="factoryInput__arrow" />
       </div>
-      <label htmlFor="attach-file" className="factoryInput__label">
+      <label for="attach-file" className="factoryInput__label">
         <span>Add photos</span>
         <FontAwesomeIcon icon={faPlus} />
       </label>
@@ -98,5 +96,4 @@ const NweetFactory = ({ userObj }) => {
     </form>
   );
 };
-
 export default NweetFactory;
