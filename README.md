@@ -1,70 +1,84 @@
-# Getting Started with Create React App
+# Nwitter
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 🖇 Link
 
-## Available Scripts
+- 기능 사용해 보러 고고! ➔ [✨ Website URL ✨](https://joie-kim.github.io/Nwitter/#/)
 
-In the project directory, you can run:
+<br>
 
-### `yarn start`
+## ⛳️ Purpose
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- React를 다양한 방식으로 활용 해보기
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+<br>
 
-### `yarn test`
+## 💡 About
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Subject
 
-### `yarn build`
+- 트위터의 기능을 직접 구현해 보는 클론 프로젝트
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Features
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. User (회원 관리)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   `Firebase의 Authentication 기능을 사용했습니다.`
 
-### `yarn eject`
+   - Email 계정 만들기
+   - Email 계정으로 로그인
+   - Social 계정으로 로그인 (Google, Github)
+   - 로그아웃
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+2. Profile (프로필 관리)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   - 프로필명 변경
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+3. Post (트윗 관리)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+   `DB 역할을 하는 NoSQL 기반의 Firebase의 Cloude Firestore 기능을 사용했습니다.`
 
-## Learn More
+   - 게시글 CRUD
+     - Create && Read : 로그인한 사용자만 할 수 있음
+     - Update && Delete : 게시글의 작성자만 할 수 있음
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+   `이미지 파일 저장을 위해 Firebase의 Storage 기능을 사용했습니다.`
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+   - 이미지 파일 업로드 및 미리보기
+   - 게시글에 포함된 이미지 보여주기
 
-### Code Splitting
+4. Etc
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+   `react-router-dom 모듈을 사용했습니다.`
 
-### Analyzing the Bundle Size
+   - Routing을 통한 SPA 구현
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+<br>
 
-### Making a Progressive Web App
+## 🧑‍💻 Skills
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Programming
 
-### Advanced Configuration
+- React.js
+- Firebase (Authentication / Cloude Firestore / Storage)
+- CSS
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Deploy
 
-### Deployment
+`gh-pages 모듈을 사용했습니다.`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- github 호스팅
 
-### `yarn build` fails to minify
+<br>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 🚗 How to run
+
+- 로컬에서 구동시키고 싶다면 아래와 같이 하세요.
+- **npm** 대신 **yarn**을 사용할 수 있습니다.
+
+```bash
+# Install the dependancies
+npm install
+
+# Start the project
+npm start
+```
