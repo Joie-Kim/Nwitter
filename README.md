@@ -20,7 +20,7 @@
 
 ### Features
 
-1. User (회원 관리)
+1. <u><b>User (회원 관리)</b></u>
 
    `Firebase의 Authentication 기능을 사용했습니다.`
 
@@ -29,11 +29,11 @@
    - Social 계정으로 로그인 (Google, Github)
    - 로그아웃
 
-2. Profile (프로필 관리)
+2. <u><b>Profile (프로필 관리)</b></u>
 
    - 프로필명 변경
 
-3. Post (트윗 관리)
+3. <u><b>Post (트윗 관리)</b></u>
 
    `DB 역할을 하는 NoSQL 기반의 Firebase의 Cloude Firestore 기능을 사용했습니다.`
 
@@ -46,7 +46,7 @@
    - 이미지 파일 업로드 및 미리보기
    - 게시글에 포함된 이미지 보여주기
 
-4. Etc
+4. <u><b>Etc</b></u>
 
    `react-router-dom 모듈을 사용했습니다.`
 
