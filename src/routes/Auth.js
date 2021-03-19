@@ -5,7 +5,7 @@ import {
   faGoogle,
   faGithub,
 } from '@fortawesome/free-brands-svg-icons';
-import { firebaseInstance, authService } from 'fbase';
+import { firebaseInstance, authService } from 'lib/fbase';
 import AuthForm from 'components/AuthForm';
 
 const Auth = () => {

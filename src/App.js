@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import AppRouter from 'components/Router';
-import { authService } from 'fbase';
+import AppRouter from 'routes';
+import { authService } from 'lib/fbase';
 
 function App() {
-  const [init, setInit] = useState(false);
+  const [isInit, setIsInit] = useState(false);
   const [userObj, setUserObj] = useState(null);
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -18,7 +18,7 @@ function App() {
       } else {
         setUserObj(null);
       }
-      setInit(true);
+      setIsInit(true);
     });
   }, []);
   // firebase의 user에 변경사항이 있을 때, 다시 정보를 불러옴
@@ -35,7 +35,7 @@ function App() {
   // 상태값 하나가 줄어들어서 render 줄어듦
   return (
     <>
-      {init ? (
+      {isInit ? (
         <AppRouter
           refreshUser={refreshUser}
           isLoggedIn={Boolean(userObj)}

@@ -1,0 +1,6 @@
+@import url('./basic.css');
+@import url('./auth.css');
+@import url('./profile.css');
+@import url('./nweet.css');
+
+@import 'https://cdn.jsdelivr.net/npm/reset-css@5.0.1/reset.min.css';

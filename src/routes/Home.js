@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { dbService } from 'fbase';
+import { dbService } from 'lib/fbase';
 import Nweet from 'components/Nweet';
 import NweetFactory from 'components/NweetFactory';
 
