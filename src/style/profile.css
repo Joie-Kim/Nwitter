@@ -8,6 +8,30 @@
   flex-direction: column;
 }
 
+.profilePhoto__label {
+  color: #04aaff;
+  cursor: pointer;
+  text-align: center;
+}
+
+.profilePhoto__label span {
+  margin-right: 10px;
+  font-size: 12px;
+}
+
+.profilePhoto__attachment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.profilePhoto__attachment img {
+  height: 80px;
+  width: 80px;
+  border-radius: 40px;
+}
+
 .logOut {
   margin-top: 50px;
 }
