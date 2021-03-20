@@ -32,6 +32,28 @@
   border-radius: 40px;
 }
 
+.profileName_container {
+  width: 100%;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: 1px solid black;
+  text-align: center;
+  background-color: white;
+  color: black;
+}
+
+.profileEdit_btn {
+  cursor: pointer;
+  width: 100%;
+  padding: 7px 20px;
+  text-align: center;
+  font-size: 15px;
+  color: white;
+  border-radius: 20px;
+  border-color: black;
+  background-color: #04aaff;
+}
+
 .logOut {
   margin-top: 50px;
 }

@@ -1,18 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import AppRouter from 'routes';
-import { authService } from 'lib/fbase';
+import { authService, storageService } from 'lib/fbase';
 
 function App() {
   const [isInit, setIsInit] = useState(false);
   const [userObj, setUserObj] = useState(null);
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [url, setUrl] = useState('');
+
+  const getAttachmentUrl = (uid) => {
+    const attachmentRef = storageService.ref().child(`${uid}/profile_pic`);
+    attachmentRef
+      .getDownloadURL()
+      .then((url) => {
+        setUrl(url);
+      })
+      .catch(() => {
+        setUrl('');
+      });
+  };
 
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
+      getAttachmentUrl(user.uid);
+
       if (user) {
         setUserObj({
-          displayName: user.displayName,
           uid: user.uid,
+          displayName: user.displayName,
+          attachmentUrl: url,
           updateProfile: (args) => user.updateProfile(args),
         });
       } else {
@@ -20,13 +35,18 @@ function App() {
       }
       setIsInit(true);
     });
-  }, []);
+  }, [url]);
+
   // firebase의 user에 변경사항이 있을 때, 다시 정보를 불러옴
-  const refreshUser = () => {
+  const refreshUser = async () => {
     const user = authService.currentUser;
+
+    getAttachmentUrl(user.uid);
+
     setUserObj({
-      displayName: user.displayName,
       uid: user.uid,
+      displayName: user.displayName,
+      attachmentUrl: url,
       updateProfile: (args) => user.updateProfile(args),
     });
   };

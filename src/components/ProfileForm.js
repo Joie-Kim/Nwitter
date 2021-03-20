@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { storageService } from 'lib/fbase';
+import { dbService, storageService } from 'lib/fbase';
 import { useHistory } from 'react-router-dom';
 
 import DEFAULT_IMG from 'assets/default_profile.png';
@@ -9,7 +9,8 @@ import DEFAULT_IMG from 'assets/default_profile.png';
 const ProfileForm = ({ userObj, refreshUser }) => {
   const history = useHistory();
   const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
-  const [attachment, setAttachment] = useState('');
+  const [attachment, setAttachment] = useState(userObj.attachmentUrl);
+  const [newAttachment, setNewAttachment] = useState('');
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -23,16 +24,18 @@ const ProfileForm = ({ userObj, refreshUser }) => {
         displayName: newDisplayName,
       });
     }
-    refreshUser(); // 프로필 정보 다시 불러오기
 
-    if (attachment !== '') {
+    if (newAttachment !== '') {
+      if (attachment !== '') {
+        await storageService.refFromURL(attachment).delete();
+      }
       const attachmentRef = storageService
         .ref()
         .child(`${userObj.uid}/profile_pic`);
-      await attachmentRef.putString(attachment, 'data_url');
+      await attachmentRef.putString(newAttachment, 'data_url');
     }
 
-    alert('Success!');
+    refreshUser(); // 프로필 정보 다시 불러오기
     history.push('/profile');
   };
 
@@ -53,26 +56,36 @@ const ProfileForm = ({ userObj, refreshUser }) => {
       const {
         currentTarget: { result },
       } = finishedEvent;
-      setAttachment(result);
+      setNewAttachment(result);
     };
     if (Boolean(file)) {
       reader.readAsDataURL(file);
     }
   };
 
-  const onClearAttachment = () => setAttachment('');
+  const onClearAttachment = async () => {
+    const ok = window.confirm('Are you sure you want to set default picture?');
+    if (ok) {
+      await storageService.refFromURL(userObj.attachmentUrl).delete();
+      setAttachment('');
+      setNewAttachment('');
+    }
+  };
 
   return (
     <form onSubmit={onSubmit} className="profileForm">
       <div className="profilePhoto__attachment">
-        {attachment ? (
+        {newAttachment ? (
           <>
-            <img
-              src={attachment}
-              style={{
-                backgroundImage: attachment,
-              }}
-            />
+            <img src={newAttachment} />
+            <div className="profilePhoto__label" onClick={onClearAttachment}>
+              <span>Remove</span>
+              <FontAwesomeIcon icon={faTimes} />
+            </div>
+          </>
+        ) : attachment ? (
+          <>
+            <img src={attachment} />
             <div className="profilePhoto__label" onClick={onClearAttachment}>
               <span>Remove</span>
               <FontAwesomeIcon icon={faTimes} />
