@@ -7,11 +7,14 @@ import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 const NweetFactory = ({ userObj }) => {
   const [nweet, setNweet] = useState('');
   const [attachment, setAttachment] = useState('');
+
   const onSubmit = async (event) => {
     event.preventDefault();
+    // nweet 내용이 공백이면 저장 안 됨
     if (nweet === '') {
       return;
     }
+    // 스토리지에 파일 저장 후, url 받아옴
     let attachmentUrl = '';
     if (attachment !== '') {
       const attachmentRef = storageService
@@ -20,6 +23,7 @@ const NweetFactory = ({ userObj }) => {
       const response = await attachmentRef.putString(attachment, 'data_url');
       attachmentUrl = await response.ref.getDownloadURL();
     }
+    // nweetObj에 정보 담아서 db에 저장
     const nweetObj = {
       text: nweet,
       createdAt: Date.now(),
@@ -27,15 +31,18 @@ const NweetFactory = ({ userObj }) => {
       attachmentUrl,
     };
     await dbService.collection('nweets').add(nweetObj);
+    // 이후 초기화
     setNweet('');
     setAttachment('');
   };
+
   const onChange = (event) => {
     const {
       target: { value },
     } = event;
     setNweet(value);
   };
+
   const onFileChange = (event) => {
     const {
       target: { files },
@@ -52,7 +59,9 @@ const NweetFactory = ({ userObj }) => {
       reader.readAsDataURL(file);
     }
   };
+
   const onClearAttachment = () => setAttachment('');
+
   return (
     <form onSubmit={onSubmit} className="factoryForm">
       <div className="factoryInput__container">

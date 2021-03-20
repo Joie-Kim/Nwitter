@@ -5,7 +5,7 @@ import Home from 'routes/Home';
 import Profile from 'routes/Profile';
 import Navigation from 'components/Navigation';
 
-const AppRouter = ({ refreshUser, isLoggedIn, userObj }) => {
+const routes = ({ refreshUser, isLoggedIn, userObj }) => {
   return (
     <Router>
       {isLoggedIn && <Navigation userObj={userObj} />}
@@ -37,4 +37,4 @@ const AppRouter = ({ refreshUser, isLoggedIn, userObj }) => {
   );
 };
 
-export default AppRouter;
+export default routes;
