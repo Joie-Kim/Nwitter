@@ -4,7 +4,10 @@ import { dbService, storageService } from 'lib/fbase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
+import like from 'components/Like';
+
 import DEFAULT_IMG from 'assets/default_profile.png';
+import Like from 'components/Like';
 
 const Nweet = ({ nweetObj, userObj, isOwner }) => {
   const [isEditting, setIsEditting] = useState(false);
@@ -97,7 +100,8 @@ const Nweet = ({ nweetObj, userObj, isOwner }) => {
                 <FontAwesomeIcon icon={faPencilAlt} />
               </span>
             </div>
-          )}{' '}
+          )}
+          <Like userObj={userObj} nweetObj={nweetObj} />
         </div>
       )}
     </div>
