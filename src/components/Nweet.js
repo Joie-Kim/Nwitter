@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { dbService, storageService } from 'lib/fbase';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
-const Nweet = ({ nweetObj, isOwner }) => {
+import DEFAULT_IMG from 'assets/default_profile.png';
+
+const Nweet = ({ nweetObj, userObj, isOwner }) => {
   const [isEditting, setIsEditting] = useState(false);
   const [newNweet, setNewNweet] = useState(nweetObj.text);
+  const [creatorName, setCreatorName] = useState('');
+  const [creatorImg, setCreatorImg] = useState('');
 
   const onDeleteClick = async () => {
     const ok = window.confirm('Are you sure you want to delete this nweet?');
@@ -31,8 +35,37 @@ const Nweet = ({ nweetObj, isOwner }) => {
     setIsEditting(false);
   };
 
+  const getCreator = async () => {
+    console.log(nweetObj.creatorId);
+    await dbService
+      .collection(`users`)
+      .where('uid', '==', nweetObj.creatorId)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          setCreatorName(doc.data().displayName);
+          setCreatorImg(doc.data().photoURL);
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  useEffect(() => {
+    getCreator();
+  }, []);
+
   return (
     <div className="nweet">
+      <div className="creator">
+        {creatorImg ? (
+          <img src={creatorImg} className="creator_img" />
+        ) : (
+          <img src={DEFAULT_IMG} className="creator_img" />
+        )}
+        <label>{creatorName}</label>
+      </div>
       {isEditting ? (
         <>
           <form onSubmit={onSubmit} className="container nweetEdit">
@@ -52,7 +85,7 @@ const Nweet = ({ nweetObj, isOwner }) => {
           </span>
         </>
       ) : (
-        <>
+        <div className="content">
           <h4>{nweetObj.text}</h4>
           {nweetObj.attachmentUrl && <img src={nweetObj.attachmentUrl} />}
           {isOwner && (
@@ -65,7 +98,7 @@ const Nweet = ({ nweetObj, isOwner }) => {
               </span>
             </div>
           )}{' '}
-        </>
+        </div>
       )}
     </div>
   );

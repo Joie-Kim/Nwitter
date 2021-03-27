@@ -8,7 +8,7 @@ import DEFAULT_IMG from 'assets/default_profile.png';
 
 const ProfileView = ({ userObj, refreshUser }) => {
   const history = useHistory();
-  const attachment = userObj.attachmentUrl;
+  const [attachment, setAttachment] = useState(userObj.photoURL);
 
   const onClick = async (event) => {
     history.push('/profileEdit');

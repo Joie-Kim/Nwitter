@@ -9,8 +9,7 @@ import DEFAULT_IMG from 'assets/default_profile.png';
 const ProfileForm = ({ userObj, refreshUser }) => {
   const history = useHistory();
   const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
-  const [attachment, setAttachment] = useState(userObj.attachmentUrl);
-  const [newAttachment, setNewAttachment] = useState('');
+  const [newAttachment, setNewAttachment] = useState(userObj.photoURL);
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -23,19 +22,49 @@ const ProfileForm = ({ userObj, refreshUser }) => {
       await userObj.updateProfile({
         displayName: newDisplayName,
       });
+      await dbService
+        .collection(`users`)
+        .where('uid', '==', userObj.uid)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            doc.ref.update({ displayName: newDisplayName });
+          });
+        });
     }
 
-    if (newAttachment !== '') {
-      if (attachment !== '') {
-        await storageService.refFromURL(attachment).delete();
+    if (newAttachment !== userObj.photoURL) {
+      let attachmentUrl;
+
+      if (newAttachment) {
+        const attachmentRef = storageService
+          .ref()
+          .child(`${userObj.uid}/profile_pic`);
+        const response = await attachmentRef.putString(
+          newAttachment,
+          'data_url',
+        );
+        attachmentUrl = await response.ref.getDownloadURL();
+      } else {
+        await storageService.refFromURL(userObj.photoURL).delete();
+        attachmentUrl = null;
       }
-      const attachmentRef = storageService
-        .ref()
-        .child(`${userObj.uid}/profile_pic`);
-      await attachmentRef.putString(newAttachment, 'data_url');
+
+      await userObj.updateProfile({
+        photoURL: attachmentUrl,
+      });
+      await dbService
+        .collection(`users`)
+        .where('uid', '==', userObj.uid)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            doc.ref.update({ photoURL: attachmentUrl });
+          });
+        });
     }
 
-    refreshUser(); // 프로필 정보 다시 불러오기
+    refreshUser();
     history.push('/profile');
   };
 
@@ -66,9 +95,7 @@ const ProfileForm = ({ userObj, refreshUser }) => {
   const onClearAttachment = async () => {
     const ok = window.confirm('Are you sure you want to set default picture?');
     if (ok) {
-      await storageService.refFromURL(userObj.attachmentUrl).delete();
-      setAttachment('');
-      setNewAttachment('');
+      setNewAttachment(null);
     }
   };
 
@@ -78,14 +105,6 @@ const ProfileForm = ({ userObj, refreshUser }) => {
         {newAttachment ? (
           <>
             <img src={newAttachment} />
-            <div className="profilePhoto__label" onClick={onClearAttachment}>
-              <span>Remove</span>
-              <FontAwesomeIcon icon={faTimes} />
-            </div>
-          </>
-        ) : attachment ? (
-          <>
-            <img src={attachment} />
             <div className="profilePhoto__label" onClick={onClearAttachment}>
               <span>Remove</span>
               <FontAwesomeIcon icon={faTimes} />

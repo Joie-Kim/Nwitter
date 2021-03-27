@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { authService } from 'lib/fbase';
+import { authService, dbService } from 'lib/fbase';
 
 const AuthForm = () => {
   const [email, setEmail] = useState('');
@@ -27,11 +27,17 @@ const AuthForm = () => {
           email,
           password,
         );
+        const userObj = {
+          uid: data.user.uid,
+          displayName: data.user.displayName,
+          photoURL: data.user.photoURL,
+        };
+        await dbService.collection(`users`).add(userObj);
       } else {
         // sign in
         data = await authService.signInWithEmailAndPassword(email, password);
       }
-      console.log(data);
+      console.log(data.user);
     } catch (e) {
       console.log(e);
       setError(e.message);

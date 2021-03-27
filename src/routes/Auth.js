@@ -5,7 +5,7 @@ import {
   faGoogle,
   faGithub,
 } from '@fortawesome/free-brands-svg-icons';
-import { firebaseInstance, authService } from 'lib/fbase';
+import { firebaseInstance, authService, dbService } from 'lib/fbase';
 import AuthForm from 'components/AuthForm';
 
 const Auth = () => {
@@ -23,6 +23,12 @@ const Auth = () => {
       provider = new firebaseInstance.auth.GithubAuthProvider();
     }
     const data = await authService.signInWithPopup(provider);
+    const userObj = {
+      uid: data.user.uid,
+      displayName: data.user.displayName,
+      photoURL: data.user.photoURL,
+    };
+    await dbService.collection(`users`).add(userObj);
     console.log(data);
   };
 

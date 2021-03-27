@@ -5,50 +5,36 @@ import { authService, storageService } from 'lib/fbase';
 function App() {
   const [isInit, setIsInit] = useState(false);
   const [userObj, setUserObj] = useState(null);
-  const [url, setUrl] = useState('');
-
-  const getAttachmentUrl = (uid) => {
-    const attachmentRef = storageService.ref().child(`${uid}/profile_pic`);
-    attachmentRef
-      .getDownloadURL()
-      .then((url) => {
-        setUrl(url);
-      })
-      .catch(() => {
-        setUrl('');
-      });
-  };
 
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
-      getAttachmentUrl(user.uid);
-
       if (user) {
         setUserObj({
           uid: user.uid,
           displayName: user.displayName,
-          attachmentUrl: url,
+          photoURL: user.photoURL,
           updateProfile: (args) => user.updateProfile(args),
         });
+        setUserObj(user);
       } else {
         setUserObj(null);
       }
       setIsInit(true);
     });
-  }, [url]);
+  }, []);
 
   // firebase의 user에 변경사항이 있을 때, 다시 정보를 불러옴
   const refreshUser = async () => {
     const user = authService.currentUser;
-
-    getAttachmentUrl(user.uid);
-
+    console.log(user);
     setUserObj({
       uid: user.uid,
       displayName: user.displayName,
-      attachmentUrl: url,
+      photoURL: user.photoURL,
       updateProfile: (args) => user.updateProfile(args),
     });
+    setUserObj(user);
+    console.log(user.photoURL);
   };
 
   // isLoggedIn 대신에 Boolean(userObj) 사용
