@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTwitter,
@@ -9,7 +9,7 @@ import { firebaseInstance, authService, dbService } from 'lib/fbase';
 import AuthForm from 'components/AuthForm';
 
 const Auth = () => {
-  const onSocialClick = async (event) => {
+  const onSocialClick = useCallback(async (event) => {
     let {
       target: { name },
     } = event;
@@ -29,8 +29,7 @@ const Auth = () => {
       photoURL: data.user.photoURL,
     };
     await dbService.collection(`users`).add(userObj);
-    console.log(data);
-  };
+  }, []);
 
   return (
     <div className="authContainer">

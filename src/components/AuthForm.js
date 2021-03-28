@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { authService, dbService } from 'lib/fbase';
 
 const AuthForm = () => {
@@ -7,7 +7,7 @@ const AuthForm = () => {
   const [newAccount, setNewAccount] = useState(true);
   const [error, setError] = useState('');
 
-  const onChange = (event) => {
+  const onChange = useCallback((event) => {
     const {
       target: { name, value },
     } = event;
@@ -16,34 +16,39 @@ const AuthForm = () => {
     } else {
       setPassword(value);
     }
-  };
-  const onSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      let data;
-      if (newAccount) {
-        // create account
-        data = await authService.createUserWithEmailAndPassword(
-          email,
-          password,
-        );
-        const userObj = {
-          uid: data.user.uid,
-          displayName: data.user.displayName,
-          photoURL: data.user.photoURL,
-        };
-        await dbService.collection(`users`).add(userObj);
-      } else {
-        // sign in
-        data = await authService.signInWithEmailAndPassword(email, password);
+  }, []);
+  const onSubmit = useCallback(
+    async (event) => {
+      event.preventDefault();
+      try {
+        let data;
+        if (newAccount) {
+          // create account
+          data = await authService.createUserWithEmailAndPassword(
+            email,
+            password,
+          );
+          const userObj = {
+            uid: data.user.uid,
+            displayName: data.user.displayName,
+            photoURL: data.user.photoURL,
+          };
+          await dbService.collection(`users`).add(userObj);
+        } else {
+          // sign in
+          data = await authService.signInWithEmailAndPassword(email, password);
+        }
+      } catch (e) {
+        console.log(e);
+        setError(e.message);
       }
-      console.log(data.user);
-    } catch (e) {
-      console.log(e);
-      setError(e.message);
-    }
-  };
-  const toggleNewAccount = () => setNewAccount((prev) => !prev);
+    },
+    [newAccount, email, password],
+  );
+  const toggleNewAccount = useCallback(() => {
+    setNewAccount((prev) => !prev);
+  }, []);
+
   return (
     <>
       <form onSubmit={onSubmit} className="container">

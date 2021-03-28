@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { dbService, storageService } from 'lib/fbase';
@@ -11,71 +11,76 @@ const ProfileForm = ({ userObj, refreshUser }) => {
   const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
   const [newAttachment, setNewAttachment] = useState(userObj.photoURL);
 
-  const onSubmit = async (event) => {
-    event.preventDefault();
-    // 프로필 이름이 공백일 경우, 업데이트 할 수 없음
-    if (newDisplayName === '') {
-      return;
-    }
-    // 프로필 이름 저장
-    if (userObj.displayName !== newDisplayName) {
-      await userObj.updateProfile({
-        displayName: newDisplayName,
-      });
-      await dbService
-        .collection(`users`)
-        .where('uid', '==', userObj.uid)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            doc.ref.update({ displayName: newDisplayName });
-          });
+  const onSubmit = useCallback(
+    async (event) => {
+      event.preventDefault();
+      // 프로필 이름이 공백일 경우, 업데이트 할 수 없음
+      if (newDisplayName === '') {
+        return;
+      }
+      // 프로필 이름 저장
+      if (userObj.displayName !== newDisplayName) {
+        await userObj.updateProfile({
+          displayName: newDisplayName,
         });
-    }
-
-    if (newAttachment !== userObj.photoURL) {
-      let attachmentUrl;
-
-      if (newAttachment) {
-        const attachmentRef = storageService
-          .ref()
-          .child(`${userObj.uid}/profile_pic`);
-        const response = await attachmentRef.putString(
-          newAttachment,
-          'data_url',
-        );
-        attachmentUrl = await response.ref.getDownloadURL();
-      } else {
-        await storageService.refFromURL(userObj.photoURL).delete();
-        attachmentUrl = null;
+        await dbService
+          .collection(`users`)
+          .where('uid', '==', userObj.uid)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              doc.ref.update({ displayName: newDisplayName });
+            });
+          });
       }
 
-      await userObj.updateProfile({
-        photoURL: attachmentUrl,
-      });
-      await dbService
-        .collection(`users`)
-        .where('uid', '==', userObj.uid)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            doc.ref.update({ photoURL: attachmentUrl });
-          });
+      // 프로필 이미지 저장
+      if (newAttachment !== userObj.photoURL) {
+        let attachmentUrl;
+
+        if (newAttachment) {
+          const attachmentRef = storageService
+            .ref()
+            .child(`${userObj.uid}/profile_pic`);
+          const response = await attachmentRef.putString(
+            newAttachment,
+            'data_url',
+          );
+          attachmentUrl = await response.ref.getDownloadURL();
+        } else {
+          await storageService.refFromURL(userObj.photoURL).delete();
+          attachmentUrl = null;
+        }
+
+        await userObj.updateProfile({
+          photoURL: attachmentUrl,
         });
-    }
+        await dbService
+          .collection(`users`)
+          .where('uid', '==', userObj.uid)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              doc.ref.update({ photoURL: attachmentUrl });
+            });
+          });
+      }
 
-    refreshUser();
-    history.push('/profile');
-  };
+      // 프로필 정보 다시 받아오기
+      refreshUser();
+      history.push('/profile');
+    },
+    [history, newAttachment, newDisplayName, refreshUser, userObj],
+  );
 
-  const onChange = (event) => {
+  const onChange = useCallback((event) => {
     const {
       target: { value },
     } = event;
     setNewDisplayName(value);
-  };
+  }, []);
 
-  const onFileChange = (event) => {
+  const onFileChange = useCallback((event) => {
     const {
       target: { files },
     } = event;
@@ -90,14 +95,14 @@ const ProfileForm = ({ userObj, refreshUser }) => {
     if (Boolean(file)) {
       reader.readAsDataURL(file);
     }
-  };
+  }, []);
 
-  const onClearAttachment = async () => {
+  const onClearAttachment = useCallback(async () => {
     const ok = window.confirm('Are you sure you want to set default picture?');
     if (ok) {
       setNewAttachment(null);
     }
-  };
+  }, []);
 
   return (
     <form onSubmit={onSubmit} className="profileForm">

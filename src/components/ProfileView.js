@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { storageService } from 'lib/fbase';
+import React, { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import DEFAULT_IMG from 'assets/default_profile.png';
 
 const ProfileView = ({ userObj, refreshUser }) => {
   const history = useHistory();
-  const [attachment, setAttachment] = useState(userObj.photoURL);
+  const attachment = userObj.photoURL;
 
-  const onClick = async (event) => {
-    history.push('/profileEdit');
-  };
+  const onClick = useCallback(
+    async (event) => {
+      history.push('/profileEdit');
+    },
+    [history],
+  );
 
   return (
     <div className="profileForm">

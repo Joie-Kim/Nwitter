@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 
 import EMPTY_IMG from 'assets/empty_heart.png';
 import FULL_IMG from 'assets/full_heart.png';
@@ -6,9 +6,8 @@ import { dbService } from 'lib/fbase';
 
 const Like = ({ nweetObj, userObj }) => {
   const [isClicked, setIsClicked] = useState(false);
-  const [likeId, setLikeId] = useState('');
 
-  const onClick = async () => {
+  const onClick = useCallback(async () => {
     let numOfLike = nweetObj.like;
 
     if (isClicked) {
@@ -45,9 +44,9 @@ const Like = ({ nweetObj, userObj }) => {
     await dbService.doc(`nweets/${nweetObj.id}`).update({
       like: numOfLike,
     });
-  };
+  }, [isClicked, nweetObj.id, nweetObj.like, userObj.uid]);
 
-  const getIsLiked = async () => {
+  const getIsLiked = useCallback(async () => {
     await dbService
       .collection(`likeTo`)
       .where('nweetId', '==', nweetObj.id)
@@ -62,11 +61,11 @@ const Like = ({ nweetObj, userObj }) => {
         console.log(e);
         setIsClicked(false);
       });
-  };
+  }, [nweetObj.id, userObj.uid]);
 
   useEffect(() => {
     getIsLiked();
-  }, []);
+  }, [getIsLiked]);
 
   return (
     <div className="like">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { dbService, storageService } from 'lib/fbase';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -15,30 +15,38 @@ const Nweet = ({ nweetObj, userObj, isOwner }) => {
   const [creatorName, setCreatorName] = useState('');
   const [creatorImg, setCreatorImg] = useState('');
 
-  const onDeleteClick = async () => {
+  const onDeleteClick = useCallback(async () => {
     const ok = window.confirm('Are you sure you want to delete this nweet?');
     if (ok) {
       // delete nweet
       await dbService.doc(`nweets/${nweetObj.id}`).delete();
       await storageService.refFromURL(nweetObj.attachmentUrl).delete();
     }
-  };
-  const toggleEditing = () => setIsEditting((prev) => !prev);
-  const onChange = (event) => {
+  }, [nweetObj.attachmentUrl, nweetObj.id]);
+
+  const toggleEditing = useCallback(() => {
+    setIsEditting((prev) => !prev);
+  }, []);
+
+  const onChange = useCallback((event) => {
     const {
       target: { value },
     } = event;
     setNewNweet(value);
-  };
-  const onSubmit = (event) => {
-    event.preventDefault();
-    dbService.doc(`nweets/${nweetObj.id}`).update({
-      text: newNweet,
-    });
-    setIsEditting(false);
-  };
+  }, []);
 
-  const getCreator = async () => {
+  const onSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
+      dbService.doc(`nweets/${nweetObj.id}`).update({
+        text: newNweet,
+      });
+      setIsEditting(false);
+    },
+    [newNweet, nweetObj.id],
+  );
+
+  const getCreator = useCallback(async () => {
     console.log(nweetObj.creatorId);
     await dbService
       .collection(`users`)
@@ -53,11 +61,11 @@ const Nweet = ({ nweetObj, userObj, isOwner }) => {
       .catch((e) => {
         console.log(e);
       });
-  };
+  }, [nweetObj.creatorId]);
 
   useEffect(() => {
     getCreator();
-  }, []);
+  }, [getCreator]);
 
   return (
     <div className="nweet">

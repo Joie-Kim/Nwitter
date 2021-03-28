@@ -1,6 +1,4 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { authService } from 'lib/fbase';
 
 import ProfileFrom from 'components/ProfileForm';
 
