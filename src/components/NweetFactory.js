@@ -29,6 +29,7 @@ const NweetFactory = ({ userObj }) => {
       createdAt: Date.now(),
       creatorId: userObj.uid,
       attachmentUrl,
+      like: 0,
     };
     await dbService.collection('nweets').add(nweetObj);
     // 이후 초기화

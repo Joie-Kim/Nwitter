@@ -101,7 +101,7 @@ const Nweet = ({ nweetObj, userObj, isOwner }) => {
               </span>
             </div>
           )}
-          <Like userObj={userObj} nweetObj={nweetObj} />
+          <Like nweetObj={nweetObj} userObj={userObj} />
         </div>
       )}
     </div>
