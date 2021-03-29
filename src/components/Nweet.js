@@ -1,13 +1,12 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { dbService, storageService } from 'lib/fbase';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
-import like from 'components/Like';
+import Like from 'components/Like';
 
 import DEFAULT_IMG from 'assets/default_profile.png';
-import Like from 'components/Like';
 
 const Nweet = ({ nweetObj, userObj, isOwner }) => {
   const [isEditting, setIsEditting] = useState(false);
@@ -96,7 +95,11 @@ const Nweet = ({ nweetObj, userObj, isOwner }) => {
           </span>
         </>
       ) : (
-        <div className="content">
+        <div
+          className="content"
+          style={
+            nweetObj.attachmentUrl ? { minHeight: 160 } : { minHeight: 60 }
+          }>
           <h4>{nweetObj.text}</h4>
           {nweetObj.attachmentUrl && <img src={nweetObj.attachmentUrl} />}
           {isOwner && (

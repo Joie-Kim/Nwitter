@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { authService, dbService } from 'lib/fbase';
 
 const AuthForm = () => {

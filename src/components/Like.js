@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import EMPTY_IMG from 'assets/empty_heart.png';
 import FULL_IMG from 'assets/full_heart.png';
@@ -69,10 +69,10 @@ const Like = ({ nweetObj, userObj }) => {
 
   return (
     <div className="like">
-      <span onClick={onClick}>
+      <div onClick={onClick}>
         {isClicked ? <img src={FULL_IMG} /> : <img src={EMPTY_IMG} />}
-        <label>{nweetObj.like}</label>
-      </span>
+      </div>
+      <label>{nweetObj.like}</label>
     </div>
   );
 };

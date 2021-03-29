@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { storageService, dbService } from 'lib/fbase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
